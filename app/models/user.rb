@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 class User < ActiveRecord::Base
+  has_many :microposts, dependent: :destroy
   before_save { self.email = email.downcase}
   before_create :create_remember_token
 
@@ -9,10 +11,14 @@ class User < ActiveRecord::Base
                     uniqueness: { case_sensitive: false }
   has_secure_password
   validates :password, length: { minimum: 6 }
-def User.new_remember_token
+  def User.new_remember_token
     SecureRandom.urlsafe_base64
   end
-
+  def feed
+    #このコードは準備段階です。
+    #完全な実装は【11】「ユーザーをフォローする」を参照して下さい。
+    Micropost.where("user_id = ?", id)
+  end
   def User.encrypt(token)
     Digest::SHA1.hexdigest(token.to_s)
   end
@@ -24,3 +30,4 @@ def User.new_remember_token
     end
 
 end
+
